@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You Are My Yellow | Our Story</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Global Styles: Times New Roman & Strict Black Text */
+    * {
+      font-family: 'Times New Roman', Times, serif !important;
+      color: #000000 !important;
+    }
+
+    body {
+      background-image: url('wallpaper idea.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* Overlay card backdrop for high contrast legibility while showcasing sunflowers */
+    .story-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(0, 0, 0, 0.8);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .border-black-thick {
+      border: 1.5px solid #000000;
+    }
+
+    /* Ken Burns / Video Slide Zoom Effects */
+    @keyframes kenburns {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    .animate-kenburns {
+      animation: kenburns 12s ease-in-out infinite alternate;
+    }
+
+    /* Slide transition effects */
+    .fade-enter {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+    .fade-enter-active {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 800ms ease, transform 800ms ease;
+    }
+
+    /* Custom progress bar */
+    .progress-bar-fill {
+      transition: width 100ms linear;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-3 sm:p-6">
+
+  <!-- Header Section -->
+  <header class="w-full max-w-4xl mx-auto flex justify-between items-center bg-white/90 p-4 rounded-xl border-black-thick shadow-md mb-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Our Journey Together</h1>
+      <p class="text-xs sm:text-sm italic">"You are my Yellow, My safe space, My everything."</p>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <!-- Music Toggle Button -->
+      <button id="musicToggleBtn" onclick="toggleAudio()" class="flex items-center gap-2 px-3 py-2 border-black-thick rounded-lg bg-yellow-100 hover:bg-yellow-200 transition-all text-xs sm:text-sm font-semibold">
+        <i id="musicIcon" class="fas fa-music"></i>
+        <span id="musicText">Play Voice Note</span>
+      </button>
+
+      <!-- GitHub Pages Info Button -->
+      <button onclick="toggleGithubModal()" class="px-3 py-2 border-black-thick rounded-lg bg-stone-100 hover:bg-stone-200 transition-all text-xs sm:text-sm font-semibold" title="GitHub Pages Deployment Guide">
+        <i class="fab fa-github"></i>
+        <span class="hidden sm:inline">Deploy</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Background Audio -->
+  <audio id="bgAudio" loop preload="auto">
+    <source src="Standard recording 4_1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Main Presentation Container -->
+  <main class="w-full max-w-4xl mx-auto flex-1 flex flex-col justify-center items-center">
+    
+    <!-- Video Player Stage Card -->
+    <div class="story-card w-full rounded-2xl p-4 sm:p-8 flex flex-col items-center justify-between min-h-[500px] relative overflow-hidden transition-all duration-500">
+      
+      <!-- Slide Counter Header -->
+      <div class="w-full flex justify-between items-center border-b border-black/30 pb-3 mb-4">
+        <span id="chapterTitle" class="text-xs sm:text-sm tracking-widest uppercase font-bold">Chapter 1: The Beginning</span>
+        <span id="slideCounter" class="text-xs sm:text-sm font-semibold">1 / 5</span>
+      </div>
+
+      <!-- Slide Content Frame -->
+      <div id="slideContent" class="w-full flex-1 flex flex-col items-center justify-center transition-all duration-700 my-2">
+        <!-- Content dynamically injected via JavaScript -->
+      </div>
+
+      <!-- Video Progress Line for Auto-Slideshow -->
+      <div class="w-full bg-stone-300 h-1.5 rounded-full mt-4 overflow-hidden border-black-thick">
+        <div id="progressBar" class="bg-black h-full w-0 progress-bar-fill"></div>
+      </div>
+
+      <!-- Presentation Controls Bar -->
+      <div class="w-full flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-black/20">
+        <!-- Slideshow Auto-Play Toggle -->
+        <button id="autoPlayBtn" onclick="toggleAutoPlay()" class="px-4 py-2 border-black-thick rounded-lg bg-black text-white hover:bg-stone-800 transition-all text-sm flex items-center gap-2 font-semibold">
+          <i id="playPauseIcon" class="fas fa-play text-white"></i>
+          <span id="playPauseText" class="text-white">Play Presentation</span>
+        </button>
+
+        <!-- Slide Thumbnails / Quick Jump -->
+        <div class="hidden md:flex items-center gap-2" id="thumbnailBar">
+          <!-- Dynamically populated dot buttons -->
+        </div>
+
+        <!-- Manual Navigation Buttons -->
+        <div class="flex items-center gap-2 ml-auto">
+          <button onclick="prevSlide()" class="px-4 py-2 border-black-thick rounded-lg bg-stone-100 hover:bg-stone-200 transition-all text-sm font-bold" title="Previous Slide">
+            <i class="fas fa-chevron-left"></i> Prev
+          </button>
+          <button onclick="nextSlide()" class="px-4 py-2 border-black-thick rounded-lg bg-stone-100 hover:bg-stone-200 transition-all text-sm font-bold" title="Next Slide">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer Message -->
+  <footer class="w-full max-w-4xl mx-auto text-center py-4 text-xs sm:text-sm font-semibold">
+    <p>Created with love &bull; You are my safe space forever</p>
+  </footer>
+
+  <!-- GitHub Deployment Help Modal -->
+  <div id="githubModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex justify-center items-center p-4 z-50">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl max-w-lg w-full border-2 border-black shadow-2xl relative">
+      <button onclick="toggleGithubModal()" class="absolute top-4 right-4 text-xl font-bold p-1 hover:opacity-70">&times;</button>
+      <h2 class="text-xl font-bold mb-3 border-b border-black pb-2">How to Deploy to GitHub Pages</h2>
+      <ol class="list-decimal pl-5 space-y-2 text-sm">
+        <li>Create a new repository on <strong>GitHub.com</strong>.</li>
+        <li>Upload <code>index.html</code> along with all image assets into the repository root.</li>
+        <li>In your GitHub Repository, go to <strong>Settings</strong> &rarr; <strong>Pages</strong>.</li>
+        <li>Under <strong>Build and deployment</strong>, set Source to <strong>Deploy from a branch</strong>.</li>
+        <li>Select the <code>main</code> branch and folder <code>/(root)</code>, then click <strong>Save</strong>.</li>
+      </ol>
+      <div class="mt-6 text-right">
+        <button onclick="toggleGithubModal()" class="px-4 py-2 bg-black text-white rounded-lg border-black-thick text-sm font-bold">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic for Slide Engine & Audio -->
+  <script>
+    // Slide Data Configuration
+    const slides = [
+      {
+        chapter: "Intro Card",
+        title: "You Are My Yellow",
+        subtitle: "My safe space, My everything.",
+        content: `
+          <div class="text-center p-6 sm:p-12 animate-kenburns max-w-2xl">
+            <div class="text-5xl sm:text-7xl mb-6">🌻</div>
+            <h2 class="text-3xl sm:text-5xl font-bold mb-6 leading-tight">"Look at the stars, look how they shine for you..."</h2>
+            <p class="text-xl sm:text-2xl italic border-t border-b border-black/40 py-4">
+              You are my Yellow, My safe space, My everything.
+            </p>
+          </div>
+        `
+      },
+      {
+        chapter: "Chapter 1: Where We Started",
+        title: "Two Little Souls Growing Up",
+        subtitle: "Before our paths crossed...",
+        content: `
+          <div class="w-full flex flex-col md:flex-row items-center justify-center gap-6 my-2">
+            <div class="flex flex-col items-center max-w-xs">
+              <div class="overflow-hidden rounded-xl border-black-thick shadow-lg h-64 w-full">
+                <img src="kid her.jpeg" alt="Her Childhood" class="w-full h-full object-cover animate-kenburns">
+              </div>
+              <p class="mt-3 text-sm italic font-semibold text-center">Growing up with that bright, beautiful smile...</p>
+            </div>
+            <div class="text-2xl font-bold hidden md:block">&</div>
+            <div class="flex flex-col items-center max-w-xs">
+              <div class="overflow-hidden rounded-xl border-black-thick shadow-lg h-64 w-full">
+                <img src="kid him.jpeg" alt="His Childhood" class="w-full h-full object-cover animate-kenburns">
+              </div>
+              <p class="mt-3 text-sm italic font-semibold text-center">A sweet boy playing innocent and free...</p>
+            </div>
+          </div>
+        `
+      },
+      {
+        chapter: "Chapter 2: The Spark",
+        title: "Unexpected Connections",
+        subtitle: "How fate found us on Instagram",
+        content: `
+          <div class="text-center p-6 max-w-xl flex flex-col items-center">
+            <div class="w-20 h-20 rounded-full border-black-thick flex items-center justify-center mb-6 bg-yellow-100 shadow-md">
+              <i class="fab fa-instagram text-4xl"></i>
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-bold mb-4">A DM That Changed Everything</h3>
+            <p class="text-lg leading-relaxed mb-6 italic">
+              "We grew up in separate worlds, but then, very unexpectedly, we crossed paths on Instagram. A simple message turned into endless conversations, late-night laughs, and two hearts recognizing their safe space."
+            </p>
+            <div class="text-sm font-semibold tracking-wider uppercase border-black-thick px-4 py-2 rounded-full">
+              Destination: Mumbai Meeting
+            </div>
+          </div>
+        `
+      },
+      {
+        chapter: "Chapter 3: Meeting In Real Life",
+        title: "Mumbai Moments & Magic",
+        subtitle: "When virtual turned into our beautiful reality",
+        content: `
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full my-2">
+            <div class="overflow-hidden rounded-lg border-black-thick h-48 sm:h-56">
+              <img src="Mumbai Day 1.jpeg" alt="Mumbai Memory 1" class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
+            </div>
+            <div class="overflow-hidden rounded-lg border-black-thick h-48 sm:h-56">
+              <img src="Mumbai Garba 1.jpeg" alt="Mumbai Memory 2" class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
+            </div>
+            <div class="overflow-hidden rounded-lg border-black-thick h-48 sm:h-56">
+              <img src="Mumbai Garba.jpeg" alt="Mumbai Memory 3" class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
+            </div>
+            <div class="overflow-hidden rounded-lg border-black-thick h-48 sm:h-56">
+              <img src="See you.jpeg" alt="Mumbai Memory 4" class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
+            </div>
+          </div>
+          <p class="text-center text-sm sm:text-base italic font-semibold mt-4">
+            Holding you tight in Mumbai &mdash; loving every sweet moment, warm hug, and shared smile with you.
+          </p>
+        `
+      },
+      {
+        chapter: "Outro / Forever",
+        title: "Our Forever Promise",
+        subtitle: "Looking forward to forever...",
+        content: `
+          <div class="text-center p-6 sm:p-10 max-w-2xl flex flex-col items-center">
+            <div class="text-4xl sm:text-6xl mb-4">💍</div>
+            <h2 class="text-3xl sm:text-5xl font-bold mb-6">"I can't wait to be married to you."</h2>
+            <p class="text-lg sm:text-xl italic mb-6">
+              Thank you for turning my world yellow. You are my home, my comfort, and my favorite adventure.
+            </p>
+            <div class="p-4 border-black-thick rounded-xl bg-yellow-50 text-base font-semibold">
+              Forever & Always Yours ❤️
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let currentSlide = 0;
+    let isPlaying = false;
+    let autoPlayTimer = null;
+    let progressTimer = null;
+    const slideDuration = 6000;
+    let progress = 0;
+
+    function renderSlide() {
+      const slide = slides[currentSlide];
+      const slideContainer = document.getElementById('slideContent');
+      
+      document.getElementById('chapterTitle').innerText = slide.chapter;
+      document.getElementById('slideCounter').innerText = `${currentSlide + 1} / ${slides.length}`;
+
+      slideContainer.classList.add('fade-enter');
+      
+      setTimeout(() => {
+        slideContainer.innerHTML = slide.content;
+        slideContainer.classList.remove('fade-enter');
+        slideContainer.classList.add('fade-enter-active');
+      }, 150);
+
+      updateThumbnails();
+      resetProgressBar();
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      renderSlide();
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      renderSlide();
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      renderSlide();
+    }
+
+    function toggleAutoPlay() {
+      isPlaying = !isPlaying;
+      const playIcon = document.getElementById('playPauseIcon');
+      const playText = document.getElementById('playPauseText');
+
+      if (isPlaying) {
+        playIcon.className = "fas fa-pause text-white";
+        playText.innerText = "Pause Presentation";
+        startAutoPlay();
+        const audio = document.getElementById('bgAudio');
+        if (audio.paused) {
+          toggleAudio();
+        }
+      } else {
+        playIcon.className = "fas fa-play text-white";
+        playText.innerText = "Play Presentation";
+        stopAutoPlay();
+      }
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      progress = 0;
+      
+      progressTimer = setInterval(() => {
+        progress += (100 / (slideDuration / 100));
+        document.getElementById('progressBar').style.width = `${Math.min(progress, 100)}%`;
+      }, 100);
+
+      autoPlayTimer = setInterval(() => {
+        progress = 0;
+        nextSlide();
+      }, slideDuration);
+    }
+
+    function stopAutoPlay() {
+      clearInterval(autoPlayTimer);
+      clearInterval(progressTimer);
+      document.getElementById('progressBar').style.width = '0%';
+    }
+
+    function resetProgressBar() {
+      if (isPlaying) {
+        startAutoPlay();
+      } else {
+        document.getElementById('progressBar').style.width = '0%';
+      }
+    }
+
+    function toggleAudio() {
+      const audio = document.getElementById('bgAudio');
+      const musicIcon = document.getElementById('musicIcon');
+      const musicText = document.getElementById('musicText');
+
+      if (audio.paused) {
+        audio.play().then(() => {
+          musicIcon.className = "fas fa-pause";
+          musicText.innerText = "Pause Recording";
+        }).catch(() => {
+          console.log("Audio playback requires user interaction first.");
+        });
+      } else {
+        audio.pause();
+        musicIcon.className = "fas fa-music";
+        musicText.innerText = "Play Voice Note";
+      }
+    }
+
+    function updateThumbnails() {
+      const thumbBar = document.getElementById('thumbnailBar');
+      thumbBar.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = `w-3 h-3 rounded-full border-black-thick transition-all ${idx === currentSlide ? 'bg-black scale-125' : 'bg-stone-200 hover:bg-stone-400'}`;
+        dot.onclick = () => goToSlide(idx);
+        thumbBar.appendChild(dot);
+      });
+    }
+
+    function toggleGithubModal() {
+      const modal = document.getElementById('githubModal');
+      modal.classList.toggle('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    window.onload = function() {
+      renderSlide();
+    };
+  </script>
+</body>
+</html>
